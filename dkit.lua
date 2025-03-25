@@ -381,7 +381,7 @@ local function getop()
 
     print(color('dim', concat(list, '\n')) .. '\n')
 
-    local pick = ask('pick something to do')
+    local pick = ask('pick a number')
     local op   = ops[tonumber(pick)]
 
     if op then
