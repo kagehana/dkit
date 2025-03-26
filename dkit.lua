@@ -9,13 +9,12 @@ exec('title ://dkit')
 
 local json  = require('json')
 local http  = require('coro-http')
-local fs    = require('fs')
 local timer = require('timer')
 
 local decode  = json.decode
 local encode  = json.encode
-local request = http.request
 local sleep   = timer.sleep
+local request = http.request
 
 
 
@@ -147,16 +146,12 @@ local function configure()
     if store['token'] then
         local file = openf('store.env', 'w')
 
-        print(1)
-        
         if file then
             local env = ''
 
             for k, v in pairs(store) do
                 env = env .. ('%s=%s\n'):format(k, v)
             end
-
-            print(env)
 
             file:write(env)
             file:close()
@@ -192,25 +187,13 @@ end
 
 
 
-
 trademark()
 configure()
 
-if storeisempty() then
-    store['token'] = ask('enter your token')
-
-    configure()
-    relay('token saved! edit it by modifying [store.env].')
-end
-
-
-
-
--- discord api
 local base = 'https://discord.com/api/v9'
 local me   = base .. '/users/@me'
 local head = {
-    {'Authorization', store['token']},
+    {'Authorization', ''}, 
     {'Content-Type', 'application/json'}
 }
 
@@ -322,8 +305,8 @@ local ops = {{
     'leave servers',
     call = function()
         local servers = getservers()
-        local items  = ask('add any exceptions (example: id, id, id)')
-        local except = split(items, ', ')
+        local items   = ask('add any exceptions (example: id, id, id)')
+        local except  = split(items, ', ')
 
         for k, v in ipairs(servers) do
             if not includes(except, v) then
@@ -389,8 +372,42 @@ local function getop()
     end
 end
 
-while true do
-    exec('cls')
-    trademark()
-    getop()
-end
+
+
+
+
+coroutine.wrap(function()
+    if not storeisempty() then
+        configure()
+
+        head[1][2] = store['token']
+    else
+        while true do
+            if storeisempty() then
+                store['token'] = ask('enter your token')
+            end
+
+
+            head[1][2] = store['token']
+
+            local user, err = getme()
+
+            if user then
+                relay('successfully authenticated as ' .. color('underline', '@' .. user.username), 1)
+
+                break
+            else
+                store['token'] = nil
+                configure()
+
+                relay(('invalid token, please retry!'), 2)
+            end
+        end
+    end
+
+    while true do
+        exec('cls')
+        trademark()
+        getop()
+    end
+end)()
