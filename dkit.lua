@@ -393,7 +393,7 @@ coroutine.wrap(function()
             local user, err = getme()
 
             if user then
-                relay('successfully authenticated as ' .. color('underline', '@' .. user.username), 1)
+                relay('successfully authenticated as ' .. color('underline', 'dim', '@' .. user.username), 1)
 
                 break
             else
