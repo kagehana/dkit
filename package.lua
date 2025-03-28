@@ -11,6 +11,7 @@
       'luvit/json',
       'luvit/timer',
       'luvit/coro-http',
+      'luvit/fs',
       'luvit/secure-socket',
     },
     files = {

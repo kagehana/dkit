@@ -42,53 +42,55 @@ store:load()
 http:settoken(store:get('token'))
 
 
--- authenticate their token
-while true do
-    if not store:isempty() and http:checktoken() then
-        break
-    else
-        store:set('token', nil)
-    end
-    
-    stdio:error('token is invalid!')
+-- silly C boundaries
+coroutine.wrap(function()
+    -- authenticate their token
+    while true do
+        if not store:isempty() and http:checktoken() then
+            break
+        else
+            store:set('token', nil)
+        end
+        
+        stdio:error('token is invalid!')
 
-    local token = stdio:prompt('enter a new token')
+        local token = stdio:prompt('enter a new token')
 
-    http:settoken(token)
+        http:settoken(token)
 
-    local res = http:get('users/@me')
+        local res = http:get('users/@me')
 
-    if res.success then
-        store:set('token', token)
-        store:save()
+        if res.success then
+            store:set('token', token)
+            store:save()
 
-        stdio:success('token saved! logged in as ' .. stdio:color('dim', 'underline', '@' .. res.data.username))
+            stdio:success('token saved! logged in as ' .. stdio:color('dim', 'underline', '@' .. res.data.username))
 
-        break
-    end
+            break
+        end
 end
 
 
 -- main functionality
--- main functionality
-while true do
-    stdio:clear()
-    stdio:banner()
-    
-    local list = {}
-    local maxd = #tostring(#ops.mods)
-    
-    for k, v in ipairs(ops.mods) do
-        insert(list, ('%' .. maxd .. 'd  ┃  %s'):format(k, v.name))
-    end
+    while true do
+        stdio:clear()
+        stdio:banner()
+        
+        local list = {}
+        local maxd = #tostring(#ops.mods)
+        
+        for k, v in ipairs(ops.mods) do
+            insert(list, ('%' .. maxd .. 'd  ┃  %s'):format(k, v.name))
+        end
 
-    print(stdio:color('dim', concat(list, '\n')) .. '\n')
-    
-    local pick = stdio:prompt('pick an operation')
-    local choice = tonumber(pick)
-    local op = ops:get(choice)
+        print(stdio:color('dim', concat(list, '\n')) .. '\n')
+        
+        local pick = stdio:prompt('pick an operation')
+        local choice = tonumber(pick)
+        local op = ops:get(choice)
 
-    if op then
-        op.call()
+        if op then
+            op.call()
+        end
     end
-end
+end)()
