@@ -70,21 +70,23 @@ end
 
 
 -- main functionality
+-- main functionality
 while true do
     stdio:clear()
     stdio:banner()
     
     local list = {}
-
+    local maxd = #tostring(#ops.mods)
+    
     for k, v in ipairs(ops.mods) do
-        insert(list, ('%d  ┃  %s'):format(k, v.name))
+        insert(list, ('%' .. maxd .. 'd  ┃  %s'):format(k, v.name))
     end
 
     print(stdio:color('dim', concat(list, '\n')) .. '\n')
     
-    local pick   = stdio:prompt('pick an operation')
+    local pick = stdio:prompt('pick an operation')
     local choice = tonumber(pick)
-    local op     = ops:get(choice)
+    local op = ops:get(choice)
 
     if op then
         op.call()
