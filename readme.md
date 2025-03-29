@@ -1,7 +1,7 @@
 # dkit
 A Discord toolkit meant to make your Discord experience simpler. Purely for educational purposes.
 
-![image](https://github.com/user-attachments/assets/44bce430-6b76-4206-b756-a4771e6d9107)
+![image](https://github.com/user-attachments/assets/ac8d41b5-66b2-4f8b-bc38-9ad2a1cacda4)
 
 # Installation
 Simply go to the [**releases**](https://github.com/kagehana/dkit/releases) and install the latest version.
